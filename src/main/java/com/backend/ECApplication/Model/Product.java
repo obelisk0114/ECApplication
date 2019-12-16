@@ -4,16 +4,21 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
+import javax.persistence.Column;
 
-@Entity // This tells Hibernate to make a table out of this class
-public class Product {
+@Entity(name = "products") // This tells Hibernate to make a table out of this class
+public class Product {     // If name is not set, class name will become table name.
 	
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)
 	private Integer id;
 	
+	@Column(columnDefinition = "VARCHAR(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL")
 	private String type;
+	
+	@Column(name = "product_name", columnDefinition = "VARCHAR(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci")
 	private String name;
+	
 	private int price;
 	private String imageUrl;
 	private int quantity;
