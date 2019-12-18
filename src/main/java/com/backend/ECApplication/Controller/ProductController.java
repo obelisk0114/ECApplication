@@ -1,6 +1,7 @@
 package com.backend.ECApplication.Controller;
 
 import java.util.List;
+import java.util.ArrayList;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,7 +29,7 @@ import com.backend.ECApplication.Dao.ProductRepository;
  *
  * @author CTC
  */
-@CrossOrigin(origins = "http://localhost:4200")
+@CrossOrigin(origins = "http://localhost:4200", maxAge = 1800)
 @Controller // This means that this class is a Controller
 @RequestMapping(path="/api/product") // This means URL's start with /product (after Application path)
 public class ProductController {
@@ -92,7 +93,7 @@ public class ProductController {
 	
 	@PutMapping("/update")
 	@ResponseBody
-	public Product updateProductByParam(@RequestParam Integer id, 
+	public Product updateProduct(@RequestParam Integer id, 
 			@RequestParam(required = false, defaultValue = "keep_it") String type,
 			@RequestParam(required = false, defaultValue = "keep_it") String name,
 			@RequestParam(required = false, defaultValue = "-1") int price,
@@ -109,9 +110,25 @@ public class ProductController {
 	}
 	
 	@PutMapping(path = "/{id}")
-	public ResponseEntity<Product> updateProduct(@RequestBody Product product) {
+	public ResponseEntity<Product> updateProduct(@RequestBody Product product, 
+			@PathVariable(value = "id") int id) {
+		if (id != product.getId()) {
+			return ResponseEntity.unprocessableEntity().build();
+		}
+		
 		Product result = productRepository.save(product);
         return ResponseEntity.ok().body(result);
+	}
+	
+	@PutMapping(path = "")
+	public ResponseEntity<List<Product>> updateProducts
+	  (@RequestBody List<Product> products) {
+		List<Product> results = new ArrayList<>();
+		for (Product product : products) {
+			Product result = productRepository.save(product);
+			results.add(result);
+		}
+        return ResponseEntity.ok().body(results);
 	}
 	
 	@DeleteMapping("/delete")
