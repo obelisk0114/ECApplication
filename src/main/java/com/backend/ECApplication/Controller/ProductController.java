@@ -3,6 +3,7 @@ package com.backend.ECApplication.Controller;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Optional;
+import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.HttpStatus;
+import org.springframework.validation.annotation.Validated;
 
 import com.backend.ECApplication.Model.Product;
 import com.backend.ECApplication.Dao.ProductRepository;
@@ -29,6 +31,7 @@ import com.backend.ECApplication.Dao.ProductRepository;
  *
  * @author CTC
  */
+@Validated
 @CrossOrigin(origins = "http://localhost:4200", maxAge = 1800)
 @Controller // This means that this class is a Controller
 @RequestMapping(path="/api/product") // This means URL's start with /product (after Application path)
@@ -40,13 +43,14 @@ public class ProductController {
 	private ProductRepository productRepository;
 	
 	@PostMapping("")
-	@ResponseBody
-	public Product addNewProduct(@RequestBody Product product) {
-		return productRepository.save(product);
+	public ResponseEntity<?> addNewProduct(@Valid @RequestBody Product product) {
+		Product result = productRepository.save(product);
+		return new ResponseEntity<>(result, HttpStatus.CREATED);
 	}
 	
 	@PostMapping(path="/add") // Map ONLY POST Requests
-	public ResponseEntity<Product> addNewProduct(
+	@ResponseBody
+	public Product addNewProduct(
 			@RequestParam(required = false, defaultValue = "") String type, 
 			@RequestParam String name, @RequestParam int price,
 			@RequestParam(required = false) String imageUrl,
@@ -64,8 +68,7 @@ public class ProductController {
 	    p.setImageUrl(imageUrl);
 	    p.setQuantity(quantity);
 	    
-	    Product result = productRepository.save(p);
-	    return ResponseEntity.ok().body(result);
+	    return productRepository.save(p);
 	}
 	
 	@GetMapping(path="/all")
@@ -94,11 +97,11 @@ public class ProductController {
 	@PutMapping("/update")
 	@ResponseBody
 	public Product updateProduct(@RequestParam Integer id, 
-			@RequestParam(required = false, defaultValue = "keep_it") String type,
-			@RequestParam(required = false, defaultValue = "keep_it") String name,
-			@RequestParam(required = false, defaultValue = "-1") int price,
-			@RequestParam(required = false, defaultValue = "keep_it") String imageUrl,
-			@RequestParam(required = false, defaultValue = "-1") int quantity) {
+			@RequestParam(required = false) String type,
+			@RequestParam(required = false) String name,
+			@RequestParam(required = false) Integer price,
+			@RequestParam(required = false) String imageUrl,
+			@RequestParam(required = false) Integer quantity) {
 		return productRepository.findById(id).map(product -> {
 			setUpdatedProduct(product, type, name, price, imageUrl, quantity);
 			return productRepository.save(product);
@@ -110,7 +113,7 @@ public class ProductController {
 	}
 	
 	@PutMapping(path = "/{id}")
-	public ResponseEntity<Product> updateProduct(@RequestBody Product product, 
+	public ResponseEntity<?> updateProduct(@Valid @RequestBody Product product, 
 			@PathVariable(value = "id") int id) {
 		if (id != product.getId()) {
 			return ResponseEntity.unprocessableEntity().build();
@@ -121,8 +124,8 @@ public class ProductController {
 	}
 	
 	@PutMapping(path = "")
-	public ResponseEntity<List<Product>> updateProducts
-	  (@RequestBody List<Product> products) {
+	public ResponseEntity<?> updateProducts
+	  (@RequestBody List<@Valid Product> products) {
 		List<Product> results = new ArrayList<>();
 		for (Product product : products) {
 			Product result = productRepository.save(product);
@@ -145,20 +148,20 @@ public class ProductController {
 	}
 	
 	private void setUpdatedProduct(Product product, String type, String name,
-			int price, String imageUrl, int quantity) {
-		if (!type.equals("keep_it")) {
+			Integer price, String imageUrl, Integer quantity) {
+		if (type != null) {
 			product.setType(type);
 		}
-		if (!name.equals("keep_it")) {
+		if (name != null) {
 			product.setName(name);
 		}
-		if (price != -1) {
+		if (price != null) {
 			product.setPrice(price);
 		}
-		if (!imageUrl.equals("keep_it")) {
+		if (imageUrl != null) {
 			product.setImageUrl(imageUrl);				
 		}
-		if (quantity != -1) {
+		if (quantity != null) {
 			product.setQuantity(quantity);				
 		}
 	}
