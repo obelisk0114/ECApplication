@@ -6,6 +6,9 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Column;
 
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Min;
+
 @Entity(name = "products") // This tells Hibernate to make a table out of this class
 public class Product {     // If name is not set, class name will become table name.
 	
@@ -16,11 +19,17 @@ public class Product {     // If name is not set, class name will become table n
 	@Column(columnDefinition = "VARCHAR(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL")
 	private String type;
 	
+	@NotNull(message = "Product name is required.")
 	@Column(name = "product_name", columnDefinition = "VARCHAR(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci")
 	private String name;
 	
+	@Min(value = -1, message = "Price must be larger than {value}. ${validatedValue} is too small")
 	private int price;
+	
+	@NotNull(message = "image_url is required.")
 	private String imageUrl;
+	
+	@Min(value = -1, message = "Availability must be larger than {value}.")
 	private int quantity;
 	
 	public Product() {}
