@@ -97,6 +97,14 @@ public class ApiExceptionHandler {
 		return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
 	}
 	
+	@ExceptionHandler(UnprocessableException.class)
+	public ResponseEntity<ErrorItem> handle(UnprocessableException e) {
+		ErrorItem error = new ErrorItem();
+		error.setMessage(e.getMessage());
+		
+		return new ResponseEntity<>(error, HttpStatus.UNPROCESSABLE_ENTITY);
+	}
+	
 	@ExceptionHandler(Exception.class)
 	public ResponseEntity<String> finalHandle(Exception e) {
 		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
