@@ -107,7 +107,7 @@ public class ApiExceptionHandler {
 	
 	@ExceptionHandler(Exception.class)
 	public ResponseEntity<String> finalHandle(Exception e) {
-		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.toString());
 	}
 
 }
