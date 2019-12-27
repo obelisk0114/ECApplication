@@ -41,8 +41,16 @@ public class ProductService {
 		return productRepository.findAll();
 	}
 	
+	public Long getProductsCount() {
+		return productRepository.count();
+	}
+	
 	public List<Product> getProductsByType(String type) {
 		return productRepository.findByType(type);
+	}
+	
+	public Long getProductsCountByType(String type) {
+		return productRepository.countByType(type);
 	}
 	
 	public Product getProduct(Integer id) {

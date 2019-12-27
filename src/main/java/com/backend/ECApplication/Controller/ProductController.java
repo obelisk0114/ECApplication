@@ -66,10 +66,22 @@ public class ProductController {
 		return productService.getProducts();
 	}
 	
+	@GetMapping(path="/all/count")
+	@ResponseBody
+	public Long getProductsCount() {
+		return productService.getProductsCount();
+	}
+	
 	@GetMapping("/{someType}")
 	public @ResponseBody List<Product> getProductsByType(
 			@PathVariable(value="someType") String type) {
 		return productService.getProductsByType(type);
+	}
+	
+	@GetMapping(path="/{someType}/count")
+	@ResponseBody
+	public Long getProductsCountByType(@PathVariable(value="someType") String type) {
+		return productService.getProductsCountByType(type);
 	}
 	
 	@GetMapping("")

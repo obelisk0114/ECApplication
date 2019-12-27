@@ -13,5 +13,7 @@ import com.backend.ECApplication.Model.Product;
 @Repository
 public interface ProductRepository extends CrudRepository<Product, Integer> {
 	List<Product> findByType(String type);
+	
+	Long countByType(String type);
 
 }
