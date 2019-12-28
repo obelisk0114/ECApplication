@@ -32,7 +32,9 @@ import com.backend.ECApplication.Service.ProductService;
 @Validated
 @CrossOrigin(origins = "http://localhost:4200", maxAge = 1800)
 @Controller // This means that this class is a Controller
-@RequestMapping(path="/api/product") // This means URL's start with /product (after Application path)
+
+//This means URL's start with /api/product (after Application path)
+@RequestMapping(path="/api/product", produces="application/json;charset=UTF-8")
 public class ProductController {
 	
 	@Autowired
